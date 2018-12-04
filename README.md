@@ -7,17 +7,17 @@
 ## Introduction
 
 Using Object Oriented JavaScript, we can encapsulate closely related data and
-behavior. Using `class`es, properties, methods, getters and setters, we can
-finely tune how our data is accessed and modified. And since everything is
-wrapped up, together, no matter where an `class` instance is needed, it behaves
-in a way we've defined. A single cell in a soup of code.
+behaviors. Using `class`es, properties, methods, getters and setters, we are
+able to finely tune how our data is accessed and modified. And since everything
+is wrapped up together, no matter where an `class` instance is needed, it
+behaves in the way we've defined.
 
 With that foundation, we're now going to look at what happens when we write
 multiple, related `class`es. Object Orientation is particularly effective
-when it comes to representing systems of inter-related things.
+when it comes to representing systems of interrelated things.
 
 In this lesson, we're going to look at some of the ways in which
-`class`es can interact, and the benefits that `class` relationships can
+`class`es can interact and the benefits that `class` relationships can
 provide us.
 
 ## Multiple Class Objects Reduce
@@ -37,16 +37,16 @@ class Book {
 	}
 }
 
-let trainDreams = new Book(
-	'Train Dreams',
-	'Denis Johnson',
-	'Historical Fiction',
-	'2002'
+let lotr = new Book(
+	'The Lord of the Rings',
+	'J.R.R. Tolkien',
+	'Fantasy',
+	'1954'
 );
 ```
 
-Some of these properties might be shared between many books, though. Authors can
-write many books. Many books fall into the same genres. The Object Oriented
+Some of these properties might be shared between many books, though. Tolkien has
+written other books. Many books fall into the same genre. The Object Oriented
 solution would be to simply encapsulate this data as well - we can make an
 `Author` `class` that contains the name of the author:
 
@@ -69,22 +69,36 @@ class Genre {
 }
 ```
 
-Now, we can create instances for both and pass in the instances rather than
-just `String`s:
+We can then create instances for both of these `class`es and _pass in the
+instances_ rather than just `String`s when creating a `Book` instance:
 
 ```js
-let denisJohnson = new Author('Denis', 'Johnson');
-let historicalFiction = new Genre('Historical Fiction');
+let tolkien = new Author('J.R.R.', 'Tolkien');
+let fantasy = new Genre('Fantasy');
 
-let trainDreams2 = new Book(
-	'Train Dreams',
-	denisJohnson,
-	historicalFiction,
-	'2002'
+let lotr2 = new Book('The Lord of the Rings', tolkien, fantasy, '1954');
+```
+
+Now that we've got a set of related `class` instances, we can reuse them as
+needed:
+
+```js
+let hobbit = new Book(
+	'The Hobbit, or There and Back Again',
+	tolkien,
+	fantasy,
+	'1937'
 );
 ```
 
-Now that we've encapsulated these related things, we can
+```js
+let silmarillion = new Book('The Silmarillion', tolkien, fantasy, '1977');
+```
+
+Using these instances, we've eliminated the need to repeatedly write `String`
+values, reducing the chance for errors and keeping our data consistent.
+
+## Sending Messages
 
 ## SWBAT 1
 

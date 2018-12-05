@@ -219,25 +219,77 @@ unfinishedTales.infoStatement;
 ```
 
 Because of what we have written, `Book` is has become dependent on `Author` in
-order to fully function correctly. In a way, `Book` has become less flexible
-due to this dependency and we will revisit this idea later. For now, though,
-these dependencies can be very useful to recognize. They are core to `class`es
-working in collaboration.
+order to fully function correctly. If we make changes to the `Author` `class`,
+say we change the name of a property, we could potentially break functionality
+in `Book`.
 
-## Using Complex Dependencies
+On the flip side, if we change a property in `Book`, `Author` isn't affected.
+`Author` is not dependent on `Book`.
 
-So far, we've seen
+Now, we could _choose_ to reverse this relationship and have `Author` dependent
+on `Book`. That might look something like the following:
 
-dependencies
+```js
+// notice that book is no longer keeping track of author
+class Book {
+	constructor(title, genre, publishingDate) {
+		this.title = title;
+		this.genre = genre;
+		this.publishingDate = publishingDate;
+	}
+}
 
-## Designing Collaboration
+// a new Author instance will be given a _books property
+class Author {
+	constructor(firstName, lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this._books = [];
+	}
 
-## Sending Messages
+	set books(books) {
+		this._books = books;
+	}
 
-## SWBAT 1
+	get books() {
+		return this._books;
+	}
 
-## SWBAT 2
+	get bookTitles() {
+		return this._books.map(book => book.title);
+	}
+}
+
+let stephenKing = new Author('Stephen', 'King');
+let it = new Book('It', 'Horror', '1986');
+let theShining = new Book('The Shining', 'Horror', '1977');
+
+stephenKing.books = [...stephenKing.books, it];
+stephenKing.books = [...stephenKing.books, theShining];
+
+stephenKing;
+// => Author {
+//     firstName: 'Stephen',
+//     lastName: 'King',
+//     _books: [
+// 		    Book { title: 'It', genre: 'Horror', publishingDate: '1986' },
+// 		    Book { title: 'The Shining', genre: 'Horror', publishingDate: '1977' }
+// 	   ]
+//   }
+
+stephenKing.bookTitles;
+// => ['It', 'The Shining']
+```
+
+In the example above, the `Author` `class` now keeps track of `Book` instances.
+`Book`s have no idea who their `Author`s are. We've reversed the relationship,
+and `Author` is now dependent on `Book`.
 
 ## Conclusion
 
-## Resources
+When building multi `class` applications, deciding which `class`es have
+dependencies is ultimately based on the needs and purpose of your application.
+In some cases, it might make sense to let `Book` keep track its `Author`, in
+others, it might make sense for `Author` to keep track of books. Other times
+still, it might be best for both `class`es to depend on each other, which
+we will touch on in a later lesson.

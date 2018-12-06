@@ -10,17 +10,12 @@
 
 Using Object Oriented JavaScript, we can encapsulate closely related data and
 behaviors. Using classes, properties, methods, getters and setters, we are
-able to finely tune how our data is accessed and modified. Since everything
-is wrapped up together, no matter where a class instance is needed, it
-behaves in the way we've defined.
+able to finely tune how that data is accessed and modified. An instance of a
+class carries all its behaviors with it, _even if it happens to be called from
+within another class!_
 
-With that foundation, we're now going to look at what happens when we write
-multiple, related classes. Object Orientation is particularly effective
-when it comes to representing systems of interrelated things.
-
-In this lesson, we're going to look at some of the ways in which
-classes can interact and the benefits that class relationships can
-provide us.
+In this lesson, we're going to look at one-way relationships between classes.
+That is, one class using another classes data and/or behaviors.
 
 ## Recognize How Multiple Classes Can Share Data
 
@@ -46,10 +41,10 @@ let lordOfTheRings = new Book(
 );
 ```
 
-Some of these properties might be shared between many books, though. Tolkien has
-written other books. Many books fall into the same genre. The Object Oriented
-solution would be to simply encapsulate this data as well - we can make an
-`Author` class that contains the name of the author:
+Some of these properties might be shared between many books, though. For
+example, an author like J.R.R. Tolkien has written many other books. Many of
+those books fall into the same genre. With classes, we can encapsulate this data
+as well - we can make an `Author` class that contains the name of the author:
 
 ```js
 class Author {
@@ -162,7 +157,7 @@ class Book {
 }
 ```
 
-Here, we've created a `caption` getter that uses some properties of `Book`
+Here, we've created a `caption` [getter] that uses some properties of `Book`
 and some of `Author`. This is the most basic way classes can work together - by
 depending on each other for related data.
 
@@ -185,7 +180,7 @@ class Author {
 }
 ```
 
-We could then rewrite our `caption` getter to use `fullname` pseudo-property
+We could then rewrite our `caption` getter to use the `fullname` pseudo-property
 rather than the actual properties of `Author`:
 
 ```js
@@ -199,9 +194,9 @@ class Book {
 
 	get caption() {
 		let title = this.title;
-		let name = this.author.fullname;
+		let name = this.author.fullname; /* code change */
 		let date = this.publishingDate;
-		return `${title} was written by ${name} and published in ${date}.`;
+		return `${title} was written by ${name} and published in ${date}.`; /* code change */
 	}
 }
 
@@ -224,7 +219,7 @@ mistakenly created a `Book` instance using only `String`s again and then tried
 to use `caption` we will have a problem:
 
 ```js
-// A new book incorrectly created with string parameters for author and genre
+// A new book incorrectly created with String parameters for author and genre
 let unfinishedTales = new Book(
 	'Unfinished Tales',
 	'J.R.R. Tolkien',
@@ -251,14 +246,15 @@ unfinishedTales.caption;
 // => 'Unfinished Tales was written by undefined and published in 1980.'
 ```
 
-Because of how we have written `Book`, it has become dependent on `Author`. If
-we make changes to the `Author` class, say we change the name of a property, we
-could potentially break functionality in `Book`.
+Because `Book` relies on data and behaviors from `Author`, it has become
+_dependent_ on `Author`. If we were to make changes to the `Author` class, say
+we change the _name_ of a property or method, we could potentially break
+functionality in `Book`.
 
-On the flip side, if we change a property in `Book`, `Author` isn't affected.
+On the flip side, if we change a property in `Book`, `Author` won't be affected.
 `Author` is _not_ dependent on `Book`.
 
-Now, we could _choose_ to reverse this relationship and have `Author` dependent
+Now, if we _choose_ to reverse this relationship and have `Author` dependent
 on `Book`. That might look something like the following:
 
 ```js
@@ -316,15 +312,15 @@ stephenKing.bookTitles;
 ```
 
 > In this code snippet, we use the [Spread syntax][spread], `...`, to get all
-> elements inside of `stephenKing.books`, and an [Array literal][literal] to add
-> on an additional book at the end
+> elements inside of `stephenKing.books`, and an [Array literal][literal] to
+> include an additional book at the end
 
 In the example above, the `Author` class now keeps track of `Book` instances.
 `Book`s have no idea who their `Author`s are anymore. We've reversed the
 relationship, and `Author` is now dependent on `Book`. Determining which class
 should be dependent on others is ultimately based on the needs and purpose of
 application we're building. It may also be the case that we need our `Book`s to
-keep track of their `Author`s, and our `Author`s to keep track of their `Book`s,
+keep track of their `Author`s, _and_ our `Author`s to keep track of their `Book`s,
 something we will touch on in upcoming lessons.
 
 ## Conclusion
@@ -337,3 +333,4 @@ between classes.
 
 [spread]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
 [literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#Array_literals
+[getter]: https://www.google.com/search?q=getter+js&rlz=1C5CHFA_enUS757US757&oq=getter+js&aqs=chrome.0.69i59j69i60l2.1047j0j1&sourceid=chrome&ie=UTF-8

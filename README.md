@@ -2,32 +2,31 @@
 
 ## Learning Goals
 
-- Recognize how multiple `class`es can share data
-- Recognize how multiple `class`es can share behaviors
-- Recognize how `class`es working together develop dependencies
+- Recognize how multiple classes can share data
+- Recognize how multiple classes can share behaviors
+- Recognize how classes working together develop dependencies
 
 ## Introduction
 
 Using Object Oriented JavaScript, we can encapsulate closely related data and
-behaviors. Using `class`es, properties, methods, getters and setters, we are
-able to finely tune how our data is accessed and modified. And since everything
-is wrapped up together, no matter where an `class` instance is needed, it
+behaviors. Using classes, properties, methods, getters and setters, we are
+able to finely tune how our data is accessed and modified. Since everything
+is wrapped up together, no matter where a class instance is needed, it
 behaves in the way we've defined.
 
 With that foundation, we're now going to look at what happens when we write
-multiple, related `class`es. Object Orientation is particularly effective
+multiple, related classes. Object Orientation is particularly effective
 when it comes to representing systems of interrelated things.
 
 In this lesson, we're going to look at some of the ways in which
-`class`es can interact and the benefits that `class` relationships can
+classes can interact and the benefits that class relationships can
 provide us.
 
-## Sharing Data between Multiple Classes
+## Recognize How Multiple Classes Can Share Data
 
-Let's say we were designing an app to help search a public library's catalogue,
-that is, all the books it has available. We could write a `Book` `class`, whose
-instances represent individual books. Each book has their own information,
-title, author(s), genre, publishing date, etc...
+Let's say want to keep track of a collection of books. We could write a `Book`
+class, whose instances represent individual books. Each book has their own
+information, title, author(s), genre, publishing date, etc...
 
 ```js
 class Book {
@@ -50,7 +49,7 @@ let lordOfTheRings = new Book(
 Some of these properties might be shared between many books, though. Tolkien has
 written other books. Many books fall into the same genre. The Object Oriented
 solution would be to simply encapsulate this data as well - we can make an
-`Author` `class` that contains the name of the author:
+`Author` class that contains the name of the author:
 
 ```js
 class Author {
@@ -61,7 +60,7 @@ class Author {
 }
 ```
 
-And a `Genre` `class` that contains the name of a genre:
+And a `Genre` class that contains the name of a genre:
 
 ```js
 class Genre {
@@ -71,7 +70,7 @@ class Genre {
 }
 ```
 
-We can then create instances for both of these `class`es and _pass in the
+We can then create instances for both of these classes and _pass in the
 instances_ rather than just `String`s when creating a `Book` instance:
 
 ```js
@@ -98,7 +97,7 @@ lordOfTheRings;
 //    publishingDate: '1954' }
 ```
 
-Now that we've got a set of related `class` instances, we can reuse them as
+Now that we've got a set of related class instances, we can reuse them as
 needed:
 
 ```js
@@ -108,16 +107,14 @@ let hobbit = new Book(
 	fantasy,
 	'1937'
 );
-```
 
-```js
 let silmarillion = new Book('The Silmarillion', tolkien, fantasy, '1977');
 ```
 
 Using these instances, we've eliminated the need to repeatedly write `String`
 values, reducing the chance for errors and keeping our data consistent. Because
-the `tolkien` and `fantasy` values are pointing to instances, if we change
-the instance, all references will update as well:
+the `tolkien` and `fantasy` values are pointing to instances of `Author` and
+`Genre`, if we change the instance, all references will update as well:
 
 ```js
 tolkien.firstName = 'J.R.R.';
@@ -127,23 +124,53 @@ lordOfTheRings;
 //    author: Author { firstName: 'J.R.R.', lastName: 'Tolkien' },
 //    genre: Genre { name: 'Fantasy' },
 //    publishingDate: '1954' }
+lordOfTheRings.author.firstName;
+// => 'J.R.R.'
 ```
 
-Another important benefit we gain is that we can have a `class` use its _own_
-property to access _another_ `class`es data:
+Here, `tolkien` and `lordOfTheRings.author` refer to the same instance of
+`Author`.
+
+As we see with `lordOfTheRings.author.firstName`, by storing an instance of the
+`Author` class as a property in `Book`, we gain access to properties of the
+`Author` class:
 
 ```js
 lordOfTheRings.author; // => Author { firstName: 'J.R.R.', lastName: 'Tolkien' }
+lordOfTheRings.author.firstName; // => 'J.R.R.'
 lordOfTheRings.author.lastName; // => 'Tolkien'
 ```
 
-This is the most basic way `class`es can work together - by depending on each other
-to store related data.
+We can even write methods in one class that use the properties of another:
 
-## Sharing Behavior between Multiple Classes
+```js
+class Book {
+	constructor(title, author, genre, publishingDate) {
+		this.title = title;
+		this.author = author;
+		this.genre = genre;
+		this.publishingDate = publishingDate;
+	}
 
-In addition to data, `class`es can also utilize each other's methods. For
-instance, we could add a getter to our `Author` class called `fullname`:
+	get caption() {
+		let title = this.title;
+		let first = this.author.firstName;
+		let last = this.author.lastName;
+		let date = this.publishingDate;
+		return `${title} was written by ${first} ${last} and published in ${date}.`;
+	}
+}
+```
+
+Here, we've created a `caption` getter that uses some properties of `Book`
+and some of `Author`. This is the most basic way classes can work together - by
+depending on each other for related data.
+
+## Recognize How Multiple Classes Can Share Behaviors
+
+In addition to data, classes can also utilize each other's methods. For
+instance, we could add a getter to our `Author` class called `fullname`
+that returns a `firstName` and `lastName` interpolated together:
 
 ```js
 class Author {
@@ -158,7 +185,8 @@ class Author {
 }
 ```
 
-...and then utilize this in `Book`:
+We could then rewrite our `caption` getter to use `fullname` pseudo-property
+rather than the actual properties of `Author`:
 
 ```js
 class Book {
@@ -169,33 +197,34 @@ class Book {
 		this.publishingDate = publishingDate;
 	}
 
-	get infoStatement() {
-		return `${this.title} was written by ${
-			this.author.fullname
-		} and published in ${this.publishingDate}.`;
+	get caption() {
+		let title = this.title;
+		let name = this.author.fullname;
+		let date = this.publishingDate;
+		return `${title} was written by ${name} and published in ${date}.`;
 	}
 }
 
-lordOfTheRings.infoStatement;
+lordOfTheRings.caption;
 // => 'The Lord of the Rings was written by J.R.R. Tolkien and published in 1954.'
 ```
 
-Here, we're using properties of the `Book` `class` and `fullname` from the
-`Author` `class` together to form a sentence.
+Here, we're using some properties from `Book`, and `fullname` from `Author`.
 
-## Sharing Data and Behaviors Creates Dependencies between Classes
+## Recognize How Classes Working Together Develop Dependencies
 
-One thing to always keep in mind when working with multiple `class`es:
-If one `class` uses data or behaviors from another `class`, the first `class`
-becomes _dependent_ on the second.
+One thing to always keep in mind when working with multiple classes:
+**If one class uses data or behaviors from another class, the first class
+becomes _dependent_ on the second.**
 
-In our `Book` `class`, for instance, we've written `infoStatement` using
-`this.author.fullname`. The `infoStatement` getter is expecting there to be a
+In our `Book` class, for instance, we've written `caption` using
+`this.author.fullname`. The `caption` getter is expecting there to be a
 `fullname` property (or pseudo-property) present in `this.author`. If we
 mistakenly created a `Book` instance using only `String`s again and then tried
-to use `infoStatement` we will have a problem:
+to use `caption` we will have a problem:
 
 ```js
+// A new book incorrectly created with string parameters for author and genre
 let unfinishedTales = new Book(
 	'Unfinished Tales',
 	'J.R.R. Tolkien',
@@ -212,19 +241,22 @@ unfinishedTales;
 
 unfinishedTales.author;
 // => 'J.R.R. Tolkien'
+
+// unfinishedTales.author is just a String and has no `fullname` property
 unfinishedTales.author.fullname;
 // => undefined
-unfinishedTales.infoStatement;
+
+// when `fullname` is called from within `caption`, it produces undefined:
+unfinishedTales.caption;
 // => 'Unfinished Tales was written by undefined and published in 1980.'
 ```
 
-Because of what we have written, `Book` is has become dependent on `Author` in
-order to fully function correctly. If we make changes to the `Author` `class`,
-say we change the name of a property, we could potentially break functionality
-in `Book`.
+Because of how we have written `Book`, it has become dependent on `Author`. If
+we make changes to the `Author` class, say we change the name of a property, we
+could potentially break functionality in `Book`.
 
 On the flip side, if we change a property in `Book`, `Author` isn't affected.
-`Author` is not dependent on `Book`.
+`Author` is _not_ dependent on `Book`.
 
 Now, we could _choose_ to reverse this relationship and have `Author` dependent
 on `Book`. That might look something like the following:
@@ -239,7 +271,7 @@ class Book {
 	}
 }
 
-// a new Author instance will be given a _books property
+// a new Author instance will now be given a _books property
 class Author {
 	constructor(firstName, lastName) {
 		this.firstName = firstName;
@@ -264,6 +296,8 @@ let stephenKing = new Author('Stephen', 'King');
 let it = new Book('It', 'Horror', '1986');
 let theShining = new Book('The Shining', 'Horror', '1977');
 
+// the `books` setter replaces all books with whatever it is passed
+// here, we pass it all the previous books plus the new book we want to add
 stephenKing.books = [...stephenKing.books, it];
 stephenKing.books = [...stephenKing.books, theShining];
 
@@ -281,15 +315,25 @@ stephenKing.bookTitles;
 // => ['It', 'The Shining']
 ```
 
-In the example above, the `Author` `class` now keeps track of `Book` instances.
-`Book`s have no idea who their `Author`s are. We've reversed the relationship,
-and `Author` is now dependent on `Book`.
+> In this code snippet, we use the [Spread syntax][spread], `...`, to get all
+> elements inside of `stephenKing.books`, and an [Array literal][literal] to add
+> on an additional book at the end
+
+In the example above, the `Author` class now keeps track of `Book` instances.
+`Book`s have no idea who their `Author`s are anymore. We've reversed the
+relationship, and `Author` is now dependent on `Book`. Determining which class
+should be dependent on others is ultimately based on the needs and purpose of
+application we're building. It may also be the case that we need our `Book`s to
+keep track of their `Author`s, and our `Author`s to keep track of their `Book`s,
+something we will touch on in upcoming lessons.
 
 ## Conclusion
 
-When building multi `class` applications, deciding which `class`es have
-dependencies is ultimately based on the needs and purpose of your application.
-In some cases, it might make sense to let `Book` keep track its `Author`, in
-others, it might make sense for `Author` to keep track of books. Other times
-still, it might be best for both `class`es to depend on each other, which
-we will touch on in a later lesson.
+We can use Object Oriented JavaScript to represent systems of related data, just
+as we've seen with `Book`, `Author` and `Genre`. By storing class instances as
+properties of other class instances, we can build relationships, sharing data
+and behaviors. When we establish these relationships, we form dependencies
+between classes.
+
+[spread]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+[literal]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types#Array_literals

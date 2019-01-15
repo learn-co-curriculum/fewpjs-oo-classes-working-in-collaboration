@@ -252,11 +252,13 @@ to visually represent these dependencies, it would look something like this:
 
 <img src="https://curriculum-content.s3.amazonaws.com/fewpjs/fewpjs-class-relationships/author_book_genre.png" width= 50% alt="image representing dependencies"/>
 
-The arrows can be thought of as the direction of the relationship - `Book`
-_knows_ about `Author` and `Genre`; `Book` is dependent upon them. We can access
-instances of authors and genres _through_ books.
+The arrows can be thought of as the direction of the relationship - a `Book`
+instance _knows_ about its `Author` and `Genre` instances; `Book` is dependent
+upon `Author` and `Genre`. We can access `Author` and `Genre` instances
+_through_ books.
 
-An `Author` or `Genre`, on the other hand, does not know about `Book`. If we change a property in `Book`, `Author` and `Genre` won't be affected.
+An `Author` or `Genre` instance, on the other hand, does not know about `Book`.
+If we change a property in `Book`, `Author` and `Genre` won't be affected.
 `Author` and `Genre` are _not_ dependent on `Book`.
 
 ## Conclusion

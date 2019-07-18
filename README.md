@@ -25,19 +25,19 @@ information, title, author(s), genre, publishing date, etc...
 
 ```js
 class Book {
-	constructor(title, author, genre, publishingDate) {
-		this.title = title;
-		this.author = author;
-		this.genre = genre;
-		this.publishingDate = publishingDate;
-	}
+  constructor(title, author, genre, publishingDate) {
+    this.title = title;
+    this.author = author;
+    this.genre = genre;
+    this.publishingDate = publishingDate;
+  }
 }
 
 let lordOfTheRings = new Book(
-	'The Lord of the Rings',
-	'J.R.R. Tolkien',
-	'Literature',
-	'1954'
+  'The Lord of the Rings',
+  'J.R.R. Tolkien',
+  'Literature',
+  '1954'
 );
 ```
 
@@ -51,10 +51,10 @@ First, we'll make an `Author` class that contains the name of the author:
 
 ```js
 class Author {
-	constructor(firstName, lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 }
 ```
 
@@ -62,9 +62,9 @@ And then a `Genre` class that contains the type of a genre:
 
 ```js
 class Genre {
-	constructor(type) {
-		this.type = type;
-	}
+  constructor(type) {
+    this.type = type;
+  }
 }
 ```
 
@@ -76,10 +76,10 @@ let tolkien = new Author('John Ronald Reuel', 'Tolkien');
 let literature = new Genre('Literature');
 
 let lordOfTheRings = new Book(
-	'The Lord of the Rings',
-	tolkien,
-	literature,
-	'1954'
+  'The Lord of the Rings',
+  tolkien,
+  literature,
+  '1954'
 );
 
 lordOfTheRings;
@@ -97,10 +97,10 @@ Creating classes for these concepts increases our ability to reuse code:
 
 ```js
 let hobbit = new Book(
-	'The Hobbit, or There and Back Again',
-	tolkien,
-	literature,
-	'1937'
+  'The Hobbit, or There and Back Again',
+  tolkien,
+  literature,
+  '1937'
 );
 
 let silmarillion = new Book('The Silmarillion', tolkien, literature, '1977');
@@ -140,43 +140,43 @@ We can even write methods in one class that use the properties of another:
 
 ```js
 class Genre {
-	constructor(type) {
-		this.type = type;
-	}
+  constructor(type) {
+    this.type = type;
+  }
 }
 
 class Author {
-	constructor(firstName, lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 }
 
 class Book {
-	constructor(title, author, genre, publishingDate) {
-		this.title = title;
-		this.author = author;
-		this.genre = genre;
-		this.publishingDate = publishingDate;
-	}
+  constructor(title, author, genre, publishingDate) {
+    this.title = title;
+    this.author = author;
+    this.genre = genre;
+    this.publishingDate = publishingDate;
+  }
 
-	// the caption method accesses data from this.author
-	get caption() {
-		let title = this.title;
-		let first = this.author.firstName;
-		let last = this.author.lastName;
-		let date = this.publishingDate;
-		return `${title} was written by ${first} ${last} and published in ${date}.`;
-	}
+  // the caption method accesses data from this.author
+  get caption() {
+    let title = this.title;
+    let first = this.author.firstName;
+    let last = this.author.lastName;
+    let date = this.publishingDate;
+    return `${title} was written by ${first} ${last} and published in ${date}.`;
+  }
 }
 
 let science = new Genre('Science');
 let stephen = new Author('Stephen', 'Hawking');
 let universeInNutshell = new Book(
-	'The Universe in a Nutshell',
-	stephen,
-	science,
-	'2001'
+  'The Universe in a Nutshell',
+  stephen,
+  science,
+  '2001'
 );
 
 universeInNutshell.caption;
@@ -195,14 +195,14 @@ that returns a `firstName` and `lastName` interpolated together:
 
 ```js
 class Author {
-	constructor(firstName, lastName) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
-	get fullname() {
-		return `${this.firstName} ${this.lastName}`;
-	}
+  get fullname() {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }
 ```
 
@@ -211,19 +211,19 @@ rather than the actual properties of `Author`:
 
 ```js
 class Book {
-	constructor(title, author, genre, publishingDate) {
-		this.title = title;
-		this.author = author;
-		this.genre = genre;
-		this.publishingDate = publishingDate;
-	}
+  constructor(title, author, genre, publishingDate) {
+    this.title = title;
+    this.author = author;
+    this.genre = genre;
+    this.publishingDate = publishingDate;
+  }
 
-	get caption() {
-		let title = this.title;
-		let name = this.author.fullname; /* code change */
-		let date = this.publishingDate;
-		return `${title} was written by ${name} and published in ${date}.`; /* code change */
-	}
+  get caption() {
+    let title = this.title;
+    let name = this.author.fullname; /* code change */
+    let date = this.publishingDate;
+    return `${title} was written by ${name} and published in ${date}.`; /* code change */
+  }
 }
 
 stephen.caption;
